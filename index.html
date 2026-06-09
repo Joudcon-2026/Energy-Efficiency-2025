@@ -2,55 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Aramco Energy Efficiency Awards 2025</title>
     <style>
         html, body {
             margin: 0;
             padding: 0;
-            background-color: #0b0b0b;
             width: 100%;
             height: 100%;
+            overflow: hidden;
+            background-color: #0d0d0d;
+            font-family: sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        /* Container that holds the pages */
-        .booklet-gallery {
+        /* Fullscreen Wrapper */
+        .flipbook-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            width: 100%;
         }
 
-        /* Responsive image styling for mobile screens */
-        .page-image {
+        /* The Book Frame */
+        .book {
+            position: relative;
+            width: 90vw;
+            height: 60vw; /* Keeps the landscape book aspect ratio */
+            max-width: 800px;
+            max-height: 533px;
+            perspective: 1500px;
+        }
+
+        /* Master Page Styling */
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            transform-origin: left center;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-style: preserve-3d;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .page-front, .page-back {
+            position: absolute;
             width: 100%;
-            max-width: 800px; /* Limits size on desktop screens */
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            box-shadow: inset 3px 0 20px rgba(0,0,0,0.2), 5px 5px 15px rgba(0,0,0,0.4);
+            background-color: #1a1a1a;
+        }
+
+        .page-back {
+            transform: rotateY(180deg);
+        }
+
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* First Page Fixed Left Root Cover Layout */
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Active Layer Sorting */
+        .page.active { z-index: 10; }
+        
+        /* Swipe Instruction Hint overlay */
+        .nav-hint {
+            position: absolute;
+            bottom: 5%;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="booklet-gallery">
-        <!-- Matching file names exactly from image_464181.png -->
-        <img src="page-01.jpg" alt="Page 1" class="page-image">
-        <img src="page-02.jpg" alt="Page 2" class="page-image">
-        <img src="page-03.jpg" alt="Page 3" class="page-image">
-        <img src="page-04.jpg" alt="Page 4" class="page-image">
-        <img src="page-05.jpg" alt="Page 5" class="page-image">
-        <img src="page-06.jpg" alt="Page 6" class="page-image">
-        <img src="page-07.jpg" alt="Page 7" class="page-image">
-        <img src="page-08.jpg" alt="Page 8" class="page-image">
-        <img src="page-09.jpg" alt="Page 9" class="page-image">
-        <img src="page-10.jpg" alt="Page 10" class="page-image">
-        <img src="page-11.jpg" alt="Page 11" class="page-image">
-        <img src="page-12.jpg" alt="Page 12" class="page-image">
-        <img src="page-13.jpg" alt="Page 13" class="page-image">
-        <img src="page-14.jpg" alt="Page 14" class="page-image">
+    <div class="flipbook-container">
+        <div class="book" id="flipbook">
+            
+            <!-- Page 1 & 2 (Cover + Inside) -->
+            <div class="page" style="z-index: 7;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-01.jpg" alt="Cover"></div>
+                <div class="page-back"><img src="page-02.jpg"></div>
+            </div>
+
+            <!-- Page 3 & 4 -->
+            <div class="div page" style="z-index: 6;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-03.jpg"></div>
+                <div class="page-back"><img src="page-04.jpg"></div>
+            </div>
+
+            <!-- Page 5 & 6 -->
+            <div class="page" style="z-index: 5;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-05.jpg"></div>
+                <div class="page-back"><img src="page-06.jpg"></div>
+            </div>
+
+            <!-- Page 7 & 8 -->
+            <div class="page" style="z-index: 4;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-07.jpg"></div>
+                <div class="page-back"><img src="page-08.jpg"></div>
+            </div>
+
+            <!-- Page 9 & 10 -->
+            <div class="page" style="z-index: 3;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-09.jpg"></div>
+                <div class="page-back"><img src="page-10.jpg"></div>
+            </div>
+
+            <!-- Page 11 & 12 -->
+            <div class="page" style="z-index: 2;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-11.jpg"></div>
+                <div class="page-back"><img src="page-12.jpg"></div>
+            </div>
+
+            <!-- Page 13 & 14 (Back Covers) -->
+            <div class="page" style="z-index: 1;" onclick="turnPage(this)">
+                <div class="page-front"><img src="page-13.jpg"></div>
+                <div class="page-back"><img src="page-14.jpg"></div>
+            </div>
+
+        </div>
+        
+        <div class="nav-hint">Tap Pages to Flip</div>
     </div>
 
+    <script>
+        // Auto-minimizes address bar on iOS/Android launch instantly
+        window.scrollTo(0, 1);
+
+        function turnPage(element) {
+            // Manage stacking order depths dynamically during transitions
+            element.classList.add('active');
+            
+            if (element.classList.contains('flipped')) {
+                element.classList.remove('flipped');
+                // Wait for animation to finish before resetting index stack
+                setTimeout(() => { element.classList.remove('active'); }, 600);
+            } else {
+                element.classList.add('flipped');
+                setTimeout(() => { element.classList.remove('active'); }, 600);
+            }
+        }
+    </script>
 </body>
 </html>
