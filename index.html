@@ -9,8 +9,6 @@
     <meta name="theme-color" content="#111111">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Fixes the home screen navigation restriction -->
     <meta name="apple-mobile-web-app-title" content="Aramco Awards">
 
     <style>
@@ -21,7 +19,7 @@
         }
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* The Custom Smart Prompt */
+        /* Install Screen Overlay */
         #install-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, #222222 0%, #0a0a0a 100%); z-index: 9999;
@@ -40,9 +38,25 @@
         #ios-instructions {
             display: none; background: #222; padding: 20px; border-radius: 15px;
             border: 1px solid #333; max-width: 290px; font-size: 14px; line-height: 1.5;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 60px;
         }
         .icon-accent { color: #008751; font-weight: bold; }
+
+        /* Bouncing Arrow Animation */
+        #ios-arrow {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            animation: bounce 1.2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { bottom: 15px; transform: translateX(-50%) scale(1); }
+            50% { bottom: 35px; transform: translateX(-50%) scale(1.1); }
+        }
     </style>
 </head>
 <body>
@@ -61,21 +75,31 @@
         </div>
     </div>
 
-    <!-- The Actual Book - Updated to the secure raw embed player URL -->
-    <iframe src="https://heyzine.com/admin/show/bbc842b1cc" allowfullscreen="true" scrolling="no" allow="fullscreen"></iframe>
+    <!-- Animated Downward Arrow SVG -->
+    <div id="ios-arrow">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V20M12 20L5 13M12 20L19 13" stroke="#008751" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <!-- The Corrected Direct Booklet URL -->
+    <iframe src="https://heyzine.com/flip-book/bbc842b1cc.html" allowfullscreen="true" scrolling="no" allow="fullscreen"></iframe>
 
     <script>
         const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const overlay = document.getElementById('install-overlay');
         const androidBtn = document.getElementById('android-btn');
         const iosInstructions = document.getElementById('ios-instructions');
+        const iosArrow = document.getElementById('ios-arrow');
 
         if (isRunningStandalone) {
             overlay.style.display = 'none'; 
+            iosArrow.style.display = 'none';
         } else {
             const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             if (isiOS) {
                 iosInstructions.style.display = 'block';
+                iosArrow.style.display = 'block';
             } else {
                 let deferredPrompt;
                 window.addEventListener('beforeinstallprompt', (e) => {
