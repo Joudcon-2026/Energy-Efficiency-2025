@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aramco Energy Efficiency Awards 2025</title>
     <style>
         html, body {
@@ -12,34 +10,46 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             background-color: #0d0d0d;
             font-family: sans-serif;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Fullscreen Wrapper */
+        /* Fake height forcing mobile browsers to hide the URL bar immediately */
+        .scroll-buffer {
+            height: 120vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Fullscreen Viewport Locked to Screen Container */
         .flipbook-container {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 10;
         }
 
-        /* The Book Frame */
+        /* The Book Layout System */
         .book {
             position: relative;
             width: 90vw;
-            height: 60vw; /* Keeps the landscape book aspect ratio */
+            height: 60vw; 
             max-width: 800px;
             max-height: 533px;
             perspective: 1500px;
         }
 
-        /* Master Page Styling */
         .page {
             position: absolute;
             width: 50%;
@@ -74,15 +84,12 @@
             object-fit: contain;
         }
 
-        /* First Page Fixed Left Root Cover Layout */
         .page.flipped {
             transform: rotateY(-180deg);
         }
 
-        /* Active Layer Sorting */
         .page.active { z-index: 10; }
         
-        /* Swipe Instruction Hint overlay */
         .nav-hint {
             position: absolute;
             bottom: 5%;
@@ -96,46 +103,41 @@
 </head>
 <body>
 
+    <div class="scroll-buffer"></div>
+
     <div class="flipbook-container">
         <div class="book" id="flipbook">
             
-            <!-- Page 1 & 2 (Cover + Inside) -->
             <div class="page" style="z-index: 7;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-01.jpg" alt="Cover"></div>
                 <div class="page-back"><img src="page-02.jpg"></div>
             </div>
 
-            <!-- Page 3 & 4 -->
-            <div class="div page" style="z-index: 6;" onclick="turnPage(this)">
+            <div class="page" style="z-index: 6;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-03.jpg"></div>
                 <div class="page-back"><img src="page-04.jpg"></div>
             </div>
 
-            <!-- Page 5 & 6 -->
             <div class="page" style="z-index: 5;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-05.jpg"></div>
                 <div class="page-back"><img src="page-06.jpg"></div>
             </div>
 
-            <!-- Page 7 & 8 -->
             <div class="page" style="z-index: 4;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-07.jpg"></div>
                 <div class="page-back"><img src="page-08.jpg"></div>
             </div>
 
-            <!-- Page 9 & 10 -->
             <div class="page" style="z-index: 3;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-09.jpg"></div>
                 <div class="page-back"><img src="page-10.jpg"></div>
             </div>
 
-            <!-- Page 11 & 12 -->
             <div class="page" style="z-index: 2;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-11.jpg"></div>
                 <div class="page-back"><img src="page-12.jpg"></div>
             </div>
 
-            <!-- Page 13 & 14 (Back Covers) -->
             <div class="page" style="z-index: 1;" onclick="turnPage(this)">
                 <div class="page-front"><img src="page-13.jpg"></div>
                 <div class="page-back"><img src="page-14.jpg"></div>
@@ -147,16 +149,17 @@
     </div>
 
     <script>
-        // Auto-minimizes address bar on iOS/Android launch instantly
-        window.scrollTo(0, 1);
+        // Force an immediate layout shift that collapses the browser interface strings
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                window.scrollTo(0, 100);
+            }, 100);
+        });
 
         function turnPage(element) {
-            // Manage stacking order depths dynamically during transitions
             element.classList.add('active');
-            
             if (element.classList.contains('flipped')) {
                 element.classList.remove('flipped');
-                // Wait for animation to finish before resetting index stack
                 setTimeout(() => { element.classList.remove('active'); }, 600);
             } else {
                 element.classList.add('flipped');
