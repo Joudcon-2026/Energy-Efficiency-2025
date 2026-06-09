@@ -12,64 +12,91 @@
 
     <style>
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #111111;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* The Custom Smart Prompt */
+        #install-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 15, 0.95); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; text-align: center; padding: 30px; box-sizing: border-box;
         }
-        /* Style for the browser instructions */
-        #pwa-instructions {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 135, 81, 0.95);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            z-index: 9999;
-            pointer-events: none;
-            display: none;
+        .app-title { font-size: 22px; font-weight: 600; margin-bottom: 5px; color: #ffffff; }
+        .app-sub { font-size: 13px; color: #aaaaaa; margin-bottom: 35px; letter-spacing: 1px; }
+        
+        /* Android Style Button */
+        #android-btn {
+            display: none; background-color: #008751; color: white; border: none;
+            padding: 16px 35px; font-size: 15px; font-weight: 600; border-radius: 30px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0, 135, 81, 0.4); text-transform: uppercase;
         }
+
+        /* iOS Step Instruction Graphic */
+        #ios-instructions {
+            display: none; background: #222; padding: 20px; border-radius: 15px;
+            border: 1px solid #333; max-width: 290px; font-size: 14px; line-height: 1.5;
+        }
+        .icon-accent { color: #008751; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="pwa-instructions">
-        Tap 'Share' then 'Add to Home Screen' for Full-Screen App Mode
+    <!-- Install Screen Overlay -->
+    <div id="install-overlay">
+        <div class="app-title">ENERGY EFFICIENCY AWARDS</div>
+        <div class="app-sub">OFFICIAL INTERACTIVE BOOKLET</div>
+        
+        <!-- Smartly toggled via JS -->
+        <button id="android-btn">Install to Home Screen</button>
+        
+        <div id="ios-instructions">
+            To view in immersive full-screen app mode:<br><br>
+            1. Tap the <span class="icon-accent">Share button</span> at the bottom.<br>
+            2. Scroll down and select <span class="icon-accent">"Add to Home Screen"</span>.
+        </div>
     </div>
 
+    <!-- The Actual Book -->
     <iframe src="https://heyzine.com/flip-book/bbc842b1cc.html" allowfullscreen="true" scrolling="no"></iframe>
 
     <script>
-        // Register the Service Worker for Web App functionality
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+        // Check if user is already inside the installed App format
+        const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const overlay = document.getElementById('install-overlay');
+        const androidBtn = document.getElementById('android-btn');
+        const iosInstructions = document.getElementById('ios-instructions');
 
-        // Detect if the app is currently running in full-screen standalone mode
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        
-        if (!isStandalone) {
-            // Show installation instructions if opened inside standard Safari/Chrome
-            document.getElementById('pwa-instructions').style.display = 'block';
-            // Hide the banner automatically after 6 seconds
-            setTimeout(() => {
-                document.getElementById('pwa-instructions').style.opacity = '0';
-            }, 6000);
+        if (isRunningStandalone) {
+            overlay.style.display = 'none'; // App is already installed, launch book immediately!
+        } else {
+            // Detect Operating System
+            const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isiOS) {
+                // Show manual instructions for Apple users
+                iosInstructions.style.display = 'block';
+            } else {
+                // Prepare Android native click capture
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    androidBtn.style.display = 'block'; // Reveal Android single click button
+                });
+
+                androidBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') overlay.style.display = 'none';
+                        deferredPrompt = null;
+                    }
+                });
+            }
         }
     </script>
 </body>
