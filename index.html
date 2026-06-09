@@ -6,9 +6,12 @@
     <title>Aramco Energy Efficiency Awards 2025</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#008751">
+    <meta name="theme-color" content="#111111">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fixes the home screen navigation restriction -->
+    <meta name="apple-mobile-web-app-title" content="Aramco Awards">
 
     <style>
         html, body {
@@ -21,24 +24,23 @@
         /* The Custom Smart Prompt */
         #install-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 15, 15, 0.95); z-index: 9999;
+            background: radial-gradient(circle, #222222 0%, #0a0a0a 100%); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; text-align: center; padding: 30px; box-sizing: border-box;
         }
-        .app-title { font-size: 22px; font-weight: 600; margin-bottom: 5px; color: #ffffff; }
-        .app-sub { font-size: 13px; color: #aaaaaa; margin-bottom: 35px; letter-spacing: 1px; }
+        .app-title { font-size: 22px; font-weight: 600; margin-bottom: 5px; color: #ffffff; letter-spacing: 1px; }
+        .app-sub { font-size: 13px; color: #aaaaaa; margin-bottom: 35px; letter-spacing: 2px; }
         
-        /* Android Style Button */
         #android-btn {
             display: none; background-color: #008751; color: white; border: none;
             padding: 16px 35px; font-size: 15px; font-weight: 600; border-radius: 30px;
             cursor: pointer; box-shadow: 0 4px 15px rgba(0, 135, 81, 0.4); text-transform: uppercase;
         }
 
-        /* iOS Step Instruction Graphic */
         #ios-instructions {
             display: none; background: #222; padding: 20px; border-radius: 15px;
             border: 1px solid #333; max-width: 290px; font-size: 14px; line-height: 1.5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
         .icon-accent { color: #008751; font-weight: bold; }
     </style>
@@ -48,9 +50,8 @@
     <!-- Install Screen Overlay -->
     <div id="install-overlay">
         <div class="app-title">ENERGY EFFICIENCY AWARDS</div>
-        <div class="app-sub">OFFICIAL INTERACTIVE BOOKLET</div>
+        <div class="app-sub">OFFICIAL BOOKLET</div>
         
-        <!-- Smartly toggled via JS -->
         <button id="android-btn">Install to Home Screen</button>
         
         <div id="ios-instructions">
@@ -60,32 +61,27 @@
         </div>
     </div>
 
-    <!-- The Actual Book -->
-    <iframe src="https://heyzine.com/flip-book/bbc842b1cc.html" allowfullscreen="true" scrolling="no"></iframe>
+    <!-- The Actual Book - Updated to the secure raw embed player URL -->
+    <iframe src="https://heyzine.com/admin/show/bbc842b1cc" allowfullscreen="true" scrolling="no" allow="fullscreen"></iframe>
 
     <script>
-        // Check if user is already inside the installed App format
         const isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const overlay = document.getElementById('install-overlay');
         const androidBtn = document.getElementById('android-btn');
         const iosInstructions = document.getElementById('ios-instructions');
 
         if (isRunningStandalone) {
-            overlay.style.display = 'none'; // App is already installed, launch book immediately!
+            overlay.style.display = 'none'; 
         } else {
-            // Detect Operating System
             const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
             if (isiOS) {
-                // Show manual instructions for Apple users
                 iosInstructions.style.display = 'block';
             } else {
-                // Prepare Android native click capture
                 let deferredPrompt;
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPrompt = e;
-                    androidBtn.style.display = 'block'; // Reveal Android single click button
+                    androidBtn.style.display = 'block';
                 });
 
                 androidBtn.addEventListener('click', async () => {
