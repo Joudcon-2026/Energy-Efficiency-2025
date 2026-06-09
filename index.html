@@ -4,167 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aramco Energy Efficiency Awards 2025</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#008751">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #0d0d0d;
-            font-family: sans-serif;
-            -webkit-user-select: none;
-            user-select: none;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #111111;
         }
-
-        /* Fake height forcing mobile browsers to hide the URL bar immediately */
-        .scroll-buffer {
-            height: 120vh;
+        iframe {
             width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            pointer-events: none;
+            height: 100%;
+            border: none;
+            display: block;
         }
-
-        /* Fullscreen Viewport Locked to Screen Container */
-        .flipbook-container {
+        /* Style for the browser instructions */
+        #pwa-instructions {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        /* The Book Layout System */
-        .book {
-            position: relative;
-            width: 90vw;
-            height: 60vw; 
-            max-width: 800px;
-            max-height: 533px;
-            perspective: 1500px;
-        }
-
-        .page {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            top: 0;
-            right: 0;
-            transform-origin: left center;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            transform-style: preserve-3d;
-            z-index: 1;
-            cursor: pointer;
-        }
-
-        .page-front, .page-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            backface-visibility: hidden;
-            box-shadow: inset 3px 0 20px rgba(0,0,0,0.2), 5px 5px 15px rgba(0,0,0,0.4);
-            background-color: #1a1a1a;
-        }
-
-        .page-back {
-            transform: rotateY(180deg);
-        }
-
-        .page img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .page.flipped {
-            transform: rotateY(-180deg);
-        }
-
-        .page.active { z-index: 10; }
-        
-        .nav-hint {
-            position: absolute;
-            bottom: 5%;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 13px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 135, 81, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 9999;
             pointer-events: none;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="scroll-buffer"></div>
-
-    <div class="flipbook-container">
-        <div class="book" id="flipbook">
-            
-            <div class="page" style="z-index: 7;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-01.jpg" alt="Cover"></div>
-                <div class="page-back"><img src="page-02.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 6;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-03.jpg"></div>
-                <div class="page-back"><img src="page-04.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 5;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-05.jpg"></div>
-                <div class="page-back"><img src="page-06.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 4;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-07.jpg"></div>
-                <div class="page-back"><img src="page-08.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 3;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-09.jpg"></div>
-                <div class="page-back"><img src="page-10.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 2;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-11.jpg"></div>
-                <div class="page-back"><img src="page-12.jpg"></div>
-            </div>
-
-            <div class="page" style="z-index: 1;" onclick="turnPage(this)">
-                <div class="page-front"><img src="page-13.jpg"></div>
-                <div class="page-back"><img src="page-14.jpg"></div>
-            </div>
-
-        </div>
-        
-        <div class="nav-hint">Tap Pages to Flip</div>
+    <div id="pwa-instructions">
+        Tap 'Share' then 'Add to Home Screen' for Full-Screen App Mode
     </div>
 
-    <script>
-        // Force an immediate layout shift that collapses the browser interface strings
-        window.addEventListener("load", function() {
-            setTimeout(function() {
-                window.scrollTo(0, 100);
-            }, 100);
-        });
+    <iframe src="https://heyzine.com/flip-book/bbc842b1cc.html" allowfullscreen="true" scrolling="no"></iframe>
 
-        function turnPage(element) {
-            element.classList.add('active');
-            if (element.classList.contains('flipped')) {
-                element.classList.remove('flipped');
-                setTimeout(() => { element.classList.remove('active'); }, 600);
-            } else {
-                element.classList.add('flipped');
-                setTimeout(() => { element.classList.remove('active'); }, 600);
-            }
+    <script>
+        // Register the Service Worker for Web App functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // Detect if the app is currently running in full-screen standalone mode
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        
+        if (!isStandalone) {
+            // Show installation instructions if opened inside standard Safari/Chrome
+            document.getElementById('pwa-instructions').style.display = 'block';
+            // Hide the banner automatically after 6 seconds
+            setTimeout(() => {
+                document.getElementById('pwa-instructions').style.opacity = '0';
+            }, 6000);
         }
     </script>
 </body>
