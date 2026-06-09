@@ -61,7 +61,7 @@
 </head>
 <body>
 
-    <!-- Install Screen Overlay -->
+    <!-- Install Screen Overlay (Hidden immediately on Laptops) -->
     <div id="install-overlay">
         <div class="app-title">ENERGY EFFICIENCY AWARDS</div>
         <div class="app-sub">OFFICIAL BOOKLET</div>
@@ -92,10 +92,15 @@
         const iosInstructions = document.getElementById('ios-instructions');
         const iosArrow = document.getElementById('ios-arrow');
 
-        if (isRunningStandalone) {
+        // Laptop/Desktop Check (Looks for mobile user agents or touch screens)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1);
+
+        if (!isMobile || isRunningStandalone) {
+            // If it is a laptop/PC OR already installed as an app, hide overlays and load directly!
             overlay.style.display = 'none'; 
             iosArrow.style.display = 'none';
         } else {
+            // Inside mobile browser -> run app onboarding logic
             const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             if (isiOS) {
                 iosInstructions.style.display = 'block';
