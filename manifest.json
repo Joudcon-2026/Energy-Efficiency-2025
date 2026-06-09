@@ -1,0 +1,15 @@
+{
+  "name": "Aramco Energy Efficiency Awards",
+  "short_name": "Aramco Awards",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#008751",
+  "icons": [
+    {
+      "src": "https://heyzine.com/files/uploaded/bbc842b1cc_thumb.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
